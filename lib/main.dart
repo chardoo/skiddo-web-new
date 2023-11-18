@@ -3,17 +3,19 @@ import 'dart:async';
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 //import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as mypro;
 // import 'package:shared_preferences/shared_preferences.dart';
 // import 'dart:async';
 // import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skiddo_web/components/common/sidebar.dart';
+import 'package:skiddo_web/helper/navigation.dart';
 import 'package:skiddo_web/pages/home_page.dart';
 import 'package:skiddo_web/pages/landing_page.dart';
 import 'package:skiddo_web/pages/main_page.dart';
@@ -69,30 +71,40 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
+     final size = MediaQuery.of(context).size;
+    return mypro.ChangeNotifierProvider(
       create: (_) {
         return themeChangeProvider;
       },
-      child: Consumer<DarkThemeProvider>(
+      child: mypro.Consumer<DarkThemeProvider>(
         builder: (BuildContext context, value, child) {
           return
-              //DevicePreview(
-              // enabled: true,
-              // tools: [
-              //   ...DevicePreview.defaultTools,
-              // ],r
-              // builder: (context) =>
-              ScreenUtilInit(
-            builder: (context, child) => GetMaterialApp(
-              initialRoute: "/",
-              navigatorKey: GlobalKey(),
-              debugShowCheckedModeBanner: false,
-              theme: Styles.themeData(themeChangeProvider.darkTheme, context),
-              home: checkIfLoggedIn ==true ? const mainPage(): const LandingScreen(),
-              getPages: AppPages.appPages
-            ),
-            designSize: const Size(390, 844),
-          );
+           
+           ScreenUtilInit(
+        designSize: size,
+        builder: (context, _) {
+          return ProviderScope(
+              child: MaterialApp.router(
+            title: 'Picco web',
+            debugShowCheckedModeBanner: false,
+            theme: Styles.themeData(themeChangeProvider.darkTheme, context),
+            routerConfig: MyNavigator.router,
+          ));
+        });
+             
+          //     ScreenUtilInit(
+          //   builder: (context, child) => GetMaterialApp(
+          //     initialRoute: "/",
+          //     navigatorKey: GlobalKey(),
+          //     debugShowCheckedModeBanner: false,
+          //     theme: Styles.themeData(themeChangeProvider.darkTheme, context),
+          //     home: checkIfLoggedIn ==true ? const mainPage(): const LandingScreen(),
+          //     getPages: AppPages.appPages
+          //   ),
+
+
+          //   designSize: const Size(390, 844),
+          // );
         },
       ),
     );

@@ -41,6 +41,7 @@ class Registeration extends StatelessWidget {
         child:
     Column(
       children: [
+      
         Container(
             height: 70.h,
             child: TextFormField(
@@ -353,7 +354,7 @@ class Registeration extends StatelessWidget {
                     text: "by signing up, you are agreeing to our \n",
                     style: Theme.of(context)
                         .textTheme
-                        .headline6!
+                        .headline2!
                         ,
                     children: <TextSpan>[
                       TextSpan(
@@ -378,7 +379,7 @@ class Registeration extends StatelessWidget {
                     text: "Already have an account?",
                     style: Theme.of(context)
                         .textTheme
-                        .headline6!
+                        .headline2!
                         ,
                     children: <TextSpan>[
                       TextSpan(
@@ -406,10 +407,12 @@ class Registeration extends StatelessWidget {
     return AlertDialog(
       title: Text(
      'Picco',textAlign: TextAlign.center,
-        style: Theme.of(context)
-            .textTheme
-            .headline5!
-            ,
+        style: GoogleFonts.imFellEnglish(
+              fontWeight: FontWeight.w300,
+              fontStyle: FontStyle.normal,
+              // letterSpacing: 1,
+              fontSize: 35.h,
+              color:Colors.black)
       ),
       content: FirstLoginScreen(),
     );

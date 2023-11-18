@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:skiddo_web/components/auth/login/registeration_dialog.dart';
 import 'package:skiddo_web/components/common/spinner.dart';
 import 'package:skiddo_web/controllers/auth/login_controller.dart';
+import 'package:skiddo_web/helper/navigation.dart';
 import 'package:skiddo_web/pages/home_page.dart';
 import 'package:skiddo_web/pages/main_page.dart';
 
@@ -27,6 +28,12 @@ class FirstLoginScreen extends StatelessWidget {
   bool secureTest = true;
   bool isError = false;
   FirstLoginScreen({Key? key}) : super(key: key);
+
+  // void getCurrentAppTheme() async {
+  //   themeChangeProvider.darkTheme =
+  //       await themeChangeProvider.darkThemePreference.getTheme();
+  // }
+
   @override
   Widget build(BuildContext context) {
     return body(context);
@@ -169,11 +176,20 @@ class FirstLoginScreen extends StatelessWidget {
                                   print("login is  here");
                                   print(loginResults);
                                   if (loginResults == true) {
-                                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (BuildContext context) => mainPage()));
-
-                        //  Get.offUntil(GetPageRoute(page: () => Dashboard()), ModalRoute.withName('home') );
-                        Timer(Duration(milliseconds: 300), ()=>Get.delete<LoginController>());
+                                    //  navigator!.pop(context);
+                                    MyNavigator.pushAndReplace(
+                                        MyNavigator.home);
+                                   
+                                    //            Navigator.of(context).pushReplacement(
+                                    //   MaterialPageRoute(
+                                    //     builder: (BuildContext context) {
+                                    //       return Dashboard(
+                                    //          );
+                                    //     },
+                                    //   ),
+                                    // );
+                                    //  Get.offUntil(GetPageRoute(page: () => Dashboard()), ModalRoute.withName('home') );
+                                    // Timer(Duration(milliseconds: 300), ()=>Get.delete<LoginController>());
                                   }
                                 } else {
                                   controller.onFocus.value = true;
@@ -197,10 +213,7 @@ class FirstLoginScreen extends StatelessWidget {
                 Text.rich(
                   TextSpan(
                     text: "Need an account ",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline6!
-                       ,
+                    style: Theme.of(context).textTheme.headline2!,
                     children: <TextSpan>[
                       TextSpan(
                         text: " Create One",
@@ -229,10 +242,12 @@ class FirstLoginScreen extends StatelessWidget {
       title: Text(
         'Picco',
         textAlign: TextAlign.center,
-        style: Theme.of(context)
-            .textTheme
-            .headline5!
-            ,
+        style: GoogleFonts.imFellEnglish(
+            fontWeight: FontWeight.w300,
+            fontStyle: FontStyle.normal,
+            // letterSpacing: 1,
+            fontSize: 35.h,
+            color: Colors.black),
       ),
       content: Registeration(),
     );

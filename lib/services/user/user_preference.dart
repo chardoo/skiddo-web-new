@@ -38,9 +38,9 @@ class UserService {
   }
 
 
-  static Future<bool> setLogin(bool token) async {
+  static Future<bool> setLogin(bool isLoging) async {
     var prefs = Get.find<SharedPreferences>();
-    return prefs.setBool('isLoggedIn', token);
+    return prefs.setBool('isLoggedIn', isLoging);
   }
 
   static Future<bool> getLogin() async {

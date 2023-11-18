@@ -16,147 +16,164 @@ import 'package:skiddo_web/services/Api/gallery/gellery.dart';
 import 'package:skiddo_web/services/user/user_preference.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+part '.generated/gallery_controller.g.dart';
 
-class GalleryController extends getCont.GetxController {
-  final GlobalKey<FormState> uploadkey = GlobalKey<FormState>();
-   final GlobalKey<FormState> uploadEditValue = GlobalKey<FormState>();
-   final GlobalKey<FormState> editKey = GlobalKey<FormState>();
-  final priceController = TextEditingController();
-  final eventNameController = TextEditingController();
-   final priceExtraController = TextEditingController();
-  final eventNameExtraController = TextEditingController();
-  final eventDateController =  TextEditingController();
-  late String storeEmail;
-  var ispasswordHidden = true.obs;
-  var isSpinning = false.obs;
-  var isAddingImages =  false.obs;
-   var isSpinEventImages = false.obs;
-    var uploadimagesspinner = false.obs;
-  var isError = false.obs;
-  var onFocus = false.obs;
-  var isAccountAlreadyExistWith = false.obs;
-  var codeType = ''.obs;
+@Riverpod(keepAlive: true)
+class GalleryProvider extends _$GalleryProvider {
   GalleryEndpoint galleryEndpoint = GalleryEndpoint();
-  List<Folder> listOfFolders = [].cast<Folder>().obs;
-  List<EventImages> listOfImages = [].cast<EventImages>().obs;
-  late List<Uint8List> files;
   var myfiles = [];
-    var myfile = [];
+  var myfile = [];
   var numberOffilePicked = 0.obs;
-  var toggler = false.obs;
 
   @override
-  void onInit() async {
-    bool isWeb = GetPlatform.isWeb;
-    print("is web here to imformeorn rer");
-    print(isWeb);
-    getListOfFolder();
-    super.onInit();
+  GalleryState build() {
+    return GalleryState(
+        listOfFolders: [],
+        listOfImages: [],
+        isSpinning: false,
+        toggler: false,
+        numberOffilePicked: 0);
   }
 
   getListOfFolder() async {
-    isSpinning.value =true;
+    state = GalleryState(
+        listOfFolders: [], isSpinning: true, listOfImages: [], toggler: false);
     String userId = await UserService.getUserKey();
     var payload = {"userId": userId};
-    listOfFolders = await galleryEndpoint.getFolder(payload);
-     isSpinning.value =false;
-    update();
+    var folders = await galleryEndpoint.getFolder(payload);
+    state = GalleryState(
+        listOfFolders: folders,
+        listOfImages: [],
+        isSpinning: false,
+        toggler: state.toggler,
+        numberOffilePicked: state.numberOffilePicked);
   }
-   deleteFolder(String eventName) async {
+
+  deleteFolder(String eventName, String eventId) async {
+    state = GalleryState(
+        listOfFolders: state.listOfFolders,
+        listOfImages: state.listOfImages,
+        isSpinning: true,
+        toggler: state.toggler);
     String userId = await UserService.getUserKey();
-    var payload = {"userId": userId,
-     "eventName": eventName
+    var payload = {"userId": userId, "eventId": eventId};
+    await galleryEndpoint.deleteFolder(payload);
+    var newlist = state.listOfFolders;
+    newlist.removeWhere((element) => element.eventName == eventName);
+    state = GalleryState(
+        listOfFolders: newlist,
+        listOfImages: state.listOfImages,
+        isSpinning: false,
+        toggler: state.toggler);
+  }
+
+  Future<Map<String, dynamic>> getEventpicture(
+      String eventId, String eventName) async {
+    String userId = await UserService.getUserKey();
+    var payload = {
+      "eventId": eventId,
     };
-     await galleryEndpoint.deleteFolder(payload);
-     listOfFolders.removeWhere((element) =>element.eventName == eventName );
-    update();
+
+    var listOfImage = await galleryEndpoint.getEventpicture(payload);
+    print("blessing of healing");
+    print(listOfImage);
+    state = GalleryState(
+        listOfFolders: state.listOfFolders,
+        listOfImages: listOfImage,
+        isSpinning: false,
+        toggler: state.toggler);
+
+    return {"eventId": eventId, "eventName": eventName};
+    // await Get.to(EventGallery(eventId: eventId, eventName: eventName));
   }
 
-
-  getEventpicture(String eventId, String eventName) async {
-    isSpinEventImages.value =true;
-    String userId = await UserService.getUserKey();
-    var payload = {"eventId": eventId,};
-    
-    listOfImages = await galleryEndpoint.getEventpicture(payload);
-    isSpinEventImages.value =false;
-    await Get.to(  EventGallery(eventId: eventId, eventName: eventName)); 
-
-    update();
-  }
-   deleteAnImages(String imageId) async {
+  deleteAnImages(String imageId) async {
     String userId = await UserService.getUserKey();
     var payload = {"userId": userId, "id": imageId};
     await galleryEndpoint.deleteAnImage(payload);
-    listOfImages.removeWhere((element) =>element.id == imageId );
-    onInit();
-    update();
+    var newlist = state.listOfImages;
+    newlist.removeWhere((element) => element.id == imageId);
+    state = GalleryState(
+        listOfFolders: state.listOfFolders,
+        listOfImages: newlist,
+        isSpinning: false,
+        toggler: state.toggler);
   }
 
-  createEvent() async {
-   
+  dynamic createEvent(String eventName) async {
     // var userId =await UserService.getUserKey();
-    uploadimagesspinner.value =true;
-    FormData formData = FormData.fromMap({
-      "eventName":  eventNameController.text,
-      "eventDate":  "",
+
+    final formData = FormData.fromMap({
+      "eventName": eventName,
+      "eventDate": "",
       "images": myfile,
       "userId": await UserService.getUserKey()
     });
 
- await galleryEndpoint.createEvent(formData);
-   onInit();
-   Get.back();
-   update();
+    var resultsfolder = await galleryEndpoint.createEvent(formData);
+    Folder folder = Folder(
+        eventName: resultsfolder['eventName'],
+        eventDate: resultsfolder['eventName'],
+        url: resultsfolder['url'],
+        id: resultsfolder['userId']);
+    state = GalleryState(
+        listOfFolders: [...state.listOfFolders, folder],
+        listOfImages: state.listOfImages,
+        isSpinning: false,
+        toggler: state.toggler);
+    return {};
   }
 
-  updatingPhoto() async {
-   
-   var payload = {
-    "userId": await UserService.getUserKey(),
-    ""
-
-   };
-    // var userId =await UserService.getUserKey();
-    uploadimagesspinner.value =true;
-    FormData formData = FormData.fromMap({
-      "eventName":  eventNameController.text,
-      "eventDate":  "",
-      "images": myfile,
+  updatingImage(String priceController, String imageId, bool ispublic) async {
+    print("what iksisisis happening");
+    print(priceController);
+    print(ispublic);
+    var payload = {
+      "publicValue": ispublic,
+      "imagesId": imageId,
+      "price": priceController,
       "userId": await UserService.getUserKey()
-    });
+    };
 
- await galleryEndpoint.createEvent(formData);
-   onInit();
-   Get.back();
-   update();
+    await galleryEndpoint.updatingImage(payload);
   }
 
-  uploadeventImages(String  eventId) async {
-   
-    // var userId =await UserService.getUserKey();
-    //  listOfImages.clear();
-    isAddingImages.value =true;
-    FormData formData = FormData.fromMap({
-      "price":  int.parse( priceExtraController.text),
+  dynamic uploadeventImages(TextEditingController price, String eventId) async {
+    state = GalleryState(
+        listOfFolders: state.listOfFolders,
+        listOfImages: state.listOfImages,
+        isSpinning: true,
+        toggler: state.toggler);
+    final formData = FormData.fromMap({
+      "price": int.parse(price.text),
       "images": myfiles,
       "userId": await UserService.getUserKey(),
       "eventId": eventId
     });
 
-   var results =  await galleryEndpoint.uploadImages(formData);
-    isAddingImages.value =false;
-   listOfImages =  results;
-   update();
+    await galleryEndpoint.uploadImages(formData);
+    var payload = {
+      "eventId": eventId,
+    };
+
+    var listOfImage = await galleryEndpoint.getEventpicture(payload);
+    state = GalleryState(
+        listOfFolders: state.listOfFolders,
+        listOfImages: listOfImage,
+        isSpinning: false,
+        toggler: state.toggler);
+
+    return {};
   }
-  
+
   // pick images for event uploads
-   pickimages() async {
+  pickimages() async {
+    myfiles.clear();
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
     );
     if (result != null) {
-      //   files = result.files.map((path) => path.bytes!).toList();
       for (var file in result.files) {
         myfiles.add(MultipartFile.fromBytes(
           file.bytes!,
@@ -164,24 +181,23 @@ class GalleryController extends getCont.GetxController {
           contentType: MediaType(
             "image",
             file.extension!,
-            
           ),
         ));
       }
 
       numberOffilePicked.value = myfiles.length;
-      update();
     } else {
-    // User canceled the picker
+      // User canceled the picker
     }
   }
+
   // pick a image  for event profile
   pickFileforevent() async {
+    myfile.clear();
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
     );
     if (result != null) {
-      //   files = result.files.map((path) => path.bytes!).toList();
       for (var file in result.files) {
         myfile.add(MultipartFile.fromBytes(
           file.bytes!,
@@ -189,21 +205,38 @@ class GalleryController extends getCont.GetxController {
           contentType: MediaType(
             "image",
             file.extension!,
-            
           ),
         ));
       }
-      numberOffilePicked.value = myfile.length;
-      update();
+      state = GalleryState(
+          listOfFolders: state.listOfFolders,
+          isSpinning: state.isSpinning,
+          listOfImages: state.listOfImages,
+          toggler: state.toggler,
+          numberOffilePicked: myfile.length);
     } else {
-    // User canceled the picker
+      // User canceled the picker
     }
   }
 
-  logOut()async{
-     await UserService.setToken('');
-    Get.offUntil(GetPageRoute(page: () => LandingScreen()), ModalRoute.withName('landing') );
-   Timer(Duration(milliseconds: 300), ()=>Get.delete<GalleryController>());
-   print("hello how are you adiing sddsjkdsjdsjdsjdsjsd");
+  logOut() async {
+    await UserService.setToken('');
+    Get.offUntil(GetPageRoute(page: () => LandingScreen()),
+        ModalRoute.withName('landing'));
   }
+}
+
+class GalleryState {
+  late final bool toggler;
+  late int? numberOffilePicked;
+  final bool isSpinning;
+  final List<Folder> listOfFolders;
+  final List<EventImages> listOfImages;
+
+  GalleryState(
+      {required this.listOfFolders,
+      required this.isSpinning,
+      required this.listOfImages,
+      required this.toggler,
+      this.numberOffilePicked});
 }

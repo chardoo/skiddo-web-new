@@ -4,14 +4,14 @@ import 'package:skiddo_web/pages/gallery_page.dart';
 import 'package:skiddo_web/pages/home_page.dart';
 import 'package:skiddo_web/pages/works_page.dart';
 import 'package:sidebarx/sidebarx.dart';
-class mainPage extends StatefulWidget {
-  const mainPage({Key? key}) : super(key: key);
+class MainPage extends StatefulWidget {
+  const MainPage({Key? key}) : super(key: key);
 
   @override
   _MainViewState createState() => _MainViewState();
 }
 
-class _MainViewState extends State<mainPage> {
+class _MainViewState extends State<MainPage> {
   /// Views to display
   List<Widget> views = const [Dashboard(), GalleryPage(), WorksPage()];
 

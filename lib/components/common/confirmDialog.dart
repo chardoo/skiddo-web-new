@@ -21,10 +21,10 @@ class ConfirmDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: Container(
+        child: SizedBox(
             // color: Colors.red,
-            width: 250.w,
-            height: 650.h,
+            // width: 250.w,
+            // height: 650.h,
             child: AlertDialog(
               insetPadding: EdgeInsets.all(100),
               backgroundColor: const Color.fromARGB(255, 224, 223, 223),
@@ -62,7 +62,7 @@ class ConfirmDialog extends StatelessWidget {
                               },
                               child: Text(cancelText,
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 17,
                           ))),
                           TextButton(
@@ -78,32 +78,7 @@ class ConfirmDialog extends StatelessWidget {
                                           .colorScheme
                                           .secondary)))
 
-                          // SizedBox(
-                          //   width: 50.4.w,
-                          //       height: 50.h,
-                          //   child: ElevatedButton(
-                          //       onPressed: () {
-                          //         Navigator.pop(context);
-                          //       },
-                          //       child:  Text(
-                          //          cancelText,
-                          //           textAlign: TextAlign.center,
-                          //           style: TextStyle(fontSize: 17))),
-                          // ),
-                          // SizedBox(
-                          //   width: 50.w,
-                          //   height: 50.h,
-                          //   child: ElevatedButton(
-
-                          //     onPressed: () {
-                          //       Navigator.pop(context);
-                          //       confirmFunction!();
-                          //     },
-                          //     child:  Text(confirmText,
-                          //         textAlign: TextAlign.center,
-                          //         style: TextStyle(fontSize: 17)),
-                          //   ),
-                          // ),
+                         
                         ],
                       ),
                     ],

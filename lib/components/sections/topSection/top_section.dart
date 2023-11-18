@@ -13,17 +13,18 @@ class TopSection extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
+
       alignment: Alignment.center,
-      constraints: BoxConstraints(maxHeight: 900, minHeight: 700),
+      constraints: const BoxConstraints(maxHeight: 900, minHeight: 700),
       width: double.infinity,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: AssetImage("assets/images/background.png"),
+          image: AssetImage("assets/images/background.jpeg"),
         ),
       ),
       child: Container(
-        margin: EdgeInsets.only(top: kDefaultPadding),
+        margin: const EdgeInsets.only(top: kDefaultPadding),
         width: 1200,
         child: Stack(
           children: [

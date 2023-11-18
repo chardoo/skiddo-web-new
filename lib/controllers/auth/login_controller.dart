@@ -116,9 +116,7 @@ class LoginController extends GetxController {
       "email": loginemailController.text.trim(),
       "password": loginpasswordController.text.trim(),
     };
-
     dynamic ifUserexit = await authEndpoint.login(payload);
-    print(ifUserexit);
     if (ifUserexit == false) {
       isError.value = true;
       isSpinning.value = false;
@@ -133,9 +131,9 @@ class LoginController extends GetxController {
       isSpinning.value = false;
       await UserService.setEmail(ifUserexit.email);
       await UserService.setToken(ifUserexit.token);
-      
+
       await UserService.setUserkey(ifUserexit.id);
-      GalleryController galleryController = Get.put(GalleryController());
+      await UserService.setLogin(true);
       return true;
     }
 

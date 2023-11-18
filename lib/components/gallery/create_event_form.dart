@@ -1,20 +1,13 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
-import 'package:skiddo_web/components/auth/login/login_dialog.dart';
 import 'package:skiddo_web/components/common/spinner.dart';
-import 'package:skiddo_web/controllers/auth/login_controller.dart';
 import 'package:skiddo_web/controllers/gallery/gallery_controller.dart';
 
-class UploadImageForm extends StatelessWidget {
-  final GalleryController galleryController =
-      Get.put(GalleryController(), tag: "fkkddfkfsndsdknds");
+class UploadImageForm extends ConsumerStatefulWidget {
+
   // final ValueSetter<String> onSignIn;
   TextStyle termsAndPolicy = GoogleFonts.poppins(
     fontWeight: FontWeight.w300,
@@ -26,6 +19,22 @@ class UploadImageForm extends StatelessWidget {
   bool isError = false;
   UploadImageForm({super.key});
   @override
+  ConsumerState<UploadImageForm> createState() => _UploadImageFormState();
+}
+
+class _UploadImageFormState extends ConsumerState<UploadImageForm> {
+ 
+  final GlobalKey<FormState> uploadkey = GlobalKey<FormState>();
+  final GlobalKey<FormState> uploadEditValue = GlobalKey<FormState>();
+  final GlobalKey<FormState> editKey = GlobalKey<FormState>();
+  final priceController = TextEditingController();
+  final eventNameController = TextEditingController();
+  final priceExtraController = TextEditingController();
+  final eventNameExtraController = TextEditingController();
+  final eventDateController = TextEditingController();
+ 
+
+@override
   Widget build(BuildContext context) {
     return body(context);
   }
@@ -34,9 +43,9 @@ class UploadImageForm extends StatelessWidget {
     return SizedBox(
         height: 300.h,
         width: 400.h,
-        child: Form(
+         child: Form(
             autovalidateMode: AutovalidateMode.onUserInteraction,
-            key: galleryController.uploadkey,
+            key: uploadkey,
             child: Column(
               children: [
                 Container(
@@ -45,7 +54,7 @@ class UploadImageForm extends StatelessWidget {
                       onTap: () {
                         // controller.isError.value = false;
                       },
-                      controller: galleryController.eventNameController,
+                      controller: eventNameController,
                       // validator: (value) => controller.contactValidator(value),
                       textAlignVertical: TextAlignVertical.bottom,
                       decoration: InputDecoration(
@@ -110,11 +119,7 @@ class UploadImageForm extends StatelessWidget {
                             initialDate: DateTime.now(),
                             firstDate: DateTime(1900),
                             lastDate: DateTime(2100)))!;
-                        print("hello ho are you doing");
-                        print(date);
-                        print(date.toIso8601String());
-
-                      galleryController.eventDateController.text =   date.toString();
+                      eventDateController.text =   date.toString();
                      
                       },
                       // controller: galleryController.eventNameController,
@@ -166,52 +171,66 @@ class UploadImageForm extends StatelessWidget {
                 const SizedBox(
                   height: 4,
                 ),
-                Container(
-                  child: Row(
-                    children: [
-                      SizedBox(
-                          width: 100.h,
-                          height: 30.h,
-                          child: TextButton(
-                              style: TextButton.styleFrom(
-                                  backgroundColor: Colors.grey),
-                              onPressed: () async {
-                                await galleryController.pickFileforevent();
-                              },
-                              child: Row(
-                                children: [
-                                  Text("Choose File(s)",
-                                      style: TextStyle(
-                                        fontSize: 10.h,
-                                        color: Colors.white,
-                                      )),
-                                ],
-                              ))),
-                      SizedBox(
-                        width: 10.h,
-                      ),
-                      Obx(() => SizedBox(
-                            child: galleryController.numberOffilePicked.value <
-                                    1
-                                ? Text("No file chosen")
-                                : galleryController.numberOffilePicked.value ==
-                                        1
-                                    ? Text(
-                                        "${galleryController.numberOffilePicked.value} file Chosen")
-                                    : Text(
-                                        "${galleryController.numberOffilePicked.value} files Chosen"),
-                          ))
-                    ],
-                  ),
+                Row(
+                  children: [
+                    SizedBox(
+                        width: 100.h,
+                        height: 30.h,
+                        child: TextButton(
+                            style: TextButton.styleFrom(
+                                backgroundColor: Colors.grey),
+                            onPressed: () async {
+                              await ref.read(galleryProvider.notifier).pickFileforevent();
+                            },
+                            child: Row(
+                              children: [
+                                Text("Choose File(s)",
+                                    style: TextStyle(
+                                      fontSize: 10.h,
+                                      color: Colors.white,
+                                    )),
+                              ],
+                            ))),
+                    SizedBox(
+                      width: 10.h,
+                    ),
+                  // SizedBox(
+                  //         child: ref.watch(galleryProvider).numberOffilePicked! <
+                  //                 1
+                  //             ? Text("No file chosen")
+                  //             : ref.watch(galleryProvider).numberOffilePicked ==
+                  //                     1
+                  //                 ? Text(
+                  //                     "${ref.watch(galleryProvider).numberOffilePicked} file Chosen")
+                  //                 : Text(
+                  //                     "${ref.watch(galleryProvider).numberOffilePicked} files Chosen"),
+                  //       )
+                  ],
                 ),
+                 Obx(() => SizedBox(
+                      child: ref
+                                  .read(galleryProvider.notifier)
+                                  .numberOffilePicked
+                                  .value <
+                              1
+                          ? Text("No file chosen")
+                          : ref
+                                      .read(galleryProvider.notifier)
+                                      .numberOffilePicked
+                                      .value ==
+                                  1
+                              ? Text(
+                                  "${ref.read(galleryProvider.notifier).numberOffilePicked.value} file Chosen")
+                              : Text(
+                                  "${ref.read(galleryProvider.notifier).numberOffilePicked.value} files Chosen"),
+                    )),
                 SizedBox(
-                  height: 55.h,
+                  height: 35.h,
                 ),
-                Obx(
-                  () => SizedBox(
+              SizedBox(
                       height: 50.h,
                       width: 200.h,
-                      child: galleryController.uploadimagesspinner.value ==
+                      child: ref.watch(galleryProvider).isSpinning ==
                               false
                           ? TextButton(
                               style: TextButton.styleFrom(
@@ -223,7 +242,8 @@ class UploadImageForm extends StatelessWidget {
                                 //     .validate()) {
                                 //   print("everythingis fine Boss");
                                 // }
-                                galleryController.createEvent();
+                               ref.read(galleryProvider.notifier).createEvent(eventNameController.text);
+                                        Navigator.pop(context);
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -243,8 +263,11 @@ class UploadImageForm extends StatelessWidget {
                                 ],
                               ))
                           : const SpinnerButton()),
-                ),
-              ],
-            )));
+                
+             ],
+            ))
+        );
+ 
+ 
   }
 }

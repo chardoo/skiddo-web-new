@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,17 +14,17 @@ import 'package:skiddo_web/controllers/gallery/gallery_controller.dart';
 import 'package:skiddo_web/theme/DarkThemeProvider.dart';
 import 'package:get/get.dart';
 
-class EventGallery extends StatefulWidget {
+class EventGallery extends ConsumerStatefulWidget {
    String eventId;
    String eventName;
    EventGallery({super.key, required this.eventName, required this.eventId});
 
   @override
   // ignore: library_private_types_in_public_api
-  _EventGallery createState() => _EventGallery();
+  ConsumerState<EventGallery> createState() => _EventGallery();
 }
 
-class _EventGallery extends State<EventGallery> {
+class _EventGallery extends ConsumerState<EventGallery> {
   DarkThemeProvider themeChangeProvider = DarkThemeProvider();
   var checkIfLoggedIn = false;
   GlobalKey<ScaffoldState> _scaffoldKeyEvent = GlobalKey();
@@ -47,15 +48,12 @@ class _EventGallery extends State<EventGallery> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<GalleryController>(
-        init: GalleryController(),
-        builder: (GalleryController galleryController) {
-          
+    
           return Scaffold(
             backgroundColor:  Colors.black,
               key: _scaffoldKeyEvent,
                onDrawerChanged: (isOpened) async{
-                      galleryController.toggler.value = !galleryController.toggler.value;
+                      ref.watch(galleryProvider).toggler = !ref.watch(galleryProvider).toggler;
             },
               appBar: AppBar(
                
@@ -95,30 +93,32 @@ class _EventGallery extends State<EventGallery> {
                 ],
               ),
               // drawer: const CustomDrawer(),
-              body:  Obx(() => Container(
-                  margin: EdgeInsets.only(left: galleryController.toggler.value == true? 250.h: 50.h, right: 50.h, top: 10),
+              body:  Container(
+                  margin: EdgeInsets.only(left: ref.watch(galleryProvider).toggler == true? 250.h: 50.h, right: 50.h, top: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(widget.eventName,  style: Theme.of(context).textTheme.headline5!),
                                   SizedBox(height: 10.h,),
-                      Obx(() => Expanded(
-                            child: galleryController.isSpinEventImages.value ==
+                     Expanded(
+                            child: ref.watch(galleryProvider).isSpinning ==
                                     true
                                 ? Center(
                                     child: CircularProgressIndicator(
                                       strokeWidth: 5.h,
+                                      color: Colors.white,
                                     ),
                                   )
                                 : Container(
-                                    child: galleryController
-                                            .listOfImages.isEmpty
+                                    child:ref.watch(galleryProvider).listOfImages.isEmpty
                                         ? const Center(
                                             child: Text(
-                                            "loading Event Gallery",
+                                            "No Image added to this event",
                                             style: TextStyle(
                                                 fontSize: 24,
-                                                fontWeight: FontWeight.bold),
+                                                fontWeight: FontWeight.bold,
+                                                 color: Colors.white
+                                                ),
                                           ))
                                         : Center(
                                             child: GridView.extent(
@@ -127,8 +127,7 @@ class _EventGallery extends State<EventGallery> {
                                             crossAxisSpacing: 10,
                                             mainAxisSpacing: 10,
                                             maxCrossAxisExtent: 250.h,
-                                            children: galleryController
-                                                .listOfImages
+                                            children: ref.watch(galleryProvider).listOfImages
                                                 .map((folder) {
                                               return GalleryCard(
                                                 eventName: folder.imageId,
@@ -139,10 +138,10 @@ class _EventGallery extends State<EventGallery> {
                                               );
                                             }).toList(),
                                           ))),
-                          ))
+                          )
                     ],
-                  ))));
-        });
+                  )));
+       
   }
 
   Widget uploadFolder(String eventName) {

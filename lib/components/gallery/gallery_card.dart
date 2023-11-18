@@ -2,6 +2,7 @@ import 'dart:html';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import "package:flutter_screenutil/flutter_screenutil.dart";
 import 'package:flutter_svg/svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -12,12 +13,12 @@ import 'package:skiddo_web/components/gallery/edit_image_price_form.dart';
 import 'package:skiddo_web/controllers/gallery/gallery_controller.dart';
 import 'package:skiddo_web/services/Api/gallery/gellery.dart';
 
-class GalleryCard extends StatefulWidget {
+class GalleryCard extends ConsumerStatefulWidget {
   String eventName;
   String date;
   String id;
   String eventImage;
-  int price;
+  String price;
   GalleryCard(
       {super.key,
       required this.eventImage,
@@ -27,15 +28,13 @@ class GalleryCard extends StatefulWidget {
       required this.id});
 
   @override
-  State<GalleryCard> createState() => _PhotoCardState();
+  ConsumerState<GalleryCard> createState() => _PhotoCardState();
 }
 
-class _PhotoCardState extends State<GalleryCard> {
+class _PhotoCardState extends ConsumerState<GalleryCard> {
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<GalleryController>(
-        init: GalleryController(),
-        builder: (GalleryController galleryController) {
+   
           return Card(
                  elevation: 10,
               child: Container(
@@ -112,7 +111,7 @@ class _PhotoCardState extends State<GalleryCard> {
                                         showDialog(
                                             context: context,
                                             builder: (ctx) => confirmDeletion(
-                                                galleryController));
+                                                ref.read(galleryProvider.notifier)));
                                       }
                                     })
                           
@@ -139,10 +138,10 @@ class _PhotoCardState extends State<GalleryCard> {
                           
                     ],
                   )));
-        });
+    
   }
 
-  Widget editPrice(String productId, int price) {
+  Widget editPrice(String productId, String price) {
     return AlertDialog(
       title: Text('Edit Photos',
           textAlign: TextAlign.center,
@@ -157,7 +156,7 @@ class _PhotoCardState extends State<GalleryCard> {
     );
   }
 
-  Widget confirmDeletion(GalleryController galleryController) {
+  Widget confirmDeletion(GalleryProvider galleryController) {
     return ConfirmDialog(
       header: 'Confirm',
       content: 'This image will be deleted permanently..',

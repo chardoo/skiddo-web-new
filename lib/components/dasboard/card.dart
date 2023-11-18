@@ -27,7 +27,7 @@ class DasboardCard extends StatelessWidget {
         width: 250.h,
         child: Expanded(
             child: Container(
-          margin: EdgeInsets.all(10),
+          margin: EdgeInsets.all(5.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

@@ -1,0 +1,27 @@
+targets:
+  $default:
+    builders:
+      riverpod_generator:
+        options:
+          provider_name_suffix: ""
+          provider_family_name_suffix: ""
+
+      source_gen:combining_builder:
+        options:
+          build_extensions:
+            '^{{dir}}/{{file}}.dart': '{{dir}}/.generated/{{file}}.g.dart'
+
+      json_serializable:
+        options:
+          explicit_to_json: true
+
+      freezed:freezed:
+        enabled: true
+        options:
+          build_extensions:
+            '^{{dir}}/{{file}}.dart': '{{dir}}/.generated/{{file}}.freezed.dart'
+
+
+
+
+

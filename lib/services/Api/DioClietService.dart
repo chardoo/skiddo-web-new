@@ -3,7 +3,7 @@ import "package:dio/dio.dart";
 
 class Api {
   final dio = createDio();
-  final tokenDio = Dio(BaseOptions(baseUrl: "http://localhost:8082"));
+  final tokenDio = Dio(BaseOptions(baseUrl: "https://api.skiiddo.com"));
 
   Api._internal();
 
@@ -13,7 +13,7 @@ class Api {
 
   static Dio createDio() {
     var dio = Dio(BaseOptions(
-      baseUrl: "http://localhost:8082",
+      baseUrl: "https://api.skiiddo.com",
       receiveTimeout: const Duration(seconds: 15000), // 15 seconds
       connectTimeout: const Duration(seconds: 15000),
       sendTimeout: const Duration(seconds: 15000),

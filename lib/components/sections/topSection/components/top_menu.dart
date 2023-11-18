@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:skiddo_web/components/auth/login/login_dialog.dart';
 import 'package:skiddo_web/components/auth/login/registeration_dialog.dart';
 import 'package:skiddo_web/constants.dart';
@@ -25,47 +26,9 @@ class _MenuState extends State<Menu> {
         boxShadow: [kDefaultShadow],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MediaQuery.of(context).size.width < 400.h?MainAxisAlignment.start: MainAxisAlignment.end,
         children: [
-          InkWell(
-            onTap: () {
-              showDialog(context: context, builder: (ctx) => signUpWidget());
-            },
-            child: Container(
-              constraints: const BoxConstraints(minWidth: 122),
-              height: 100,
-              child: Stack(
-                alignment: Alignment.center,
-                children: const [
-                  Text(
-                    "Login",
-                    style: TextStyle(fontSize: 25, color: kTextColor),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              showDialog(context: context, builder: (ctx) => register());
-              // setState(() {
-
-              // });
-            },
-            child: Container(
-              constraints: const BoxConstraints(minWidth: 122),
-              height: 100,
-              child: Stack(
-                alignment: Alignment.center,
-                children: const [
-                  Text(
-                    "SignUp",
-                    style: TextStyle(fontSize: 25, color: kTextColor),
-                  ),
-                ],
-              ),
-            ),
-          )
+          
         ],
       ),
     );
@@ -75,10 +38,12 @@ class _MenuState extends State<Menu> {
     return AlertDialog(
       title: Text(
       'Picco',textAlign: TextAlign.center,
-        style: Theme.of(context)
-            .textTheme
-            .headline5!
-        
+        style: GoogleFonts.imFellEnglish(
+              fontWeight: FontWeight.w300,
+              fontStyle: FontStyle.normal,
+              // letterSpacing: 1,
+              fontSize: 35.h,
+              color:Colors.black)
       ),
       content: FirstLoginScreen(),
     );
@@ -88,10 +53,12 @@ class _MenuState extends State<Menu> {
     return AlertDialog(
       title: Text(
         'Picco',textAlign: TextAlign.center,
-        style: Theme.of(context)
-            .textTheme
-            .headline5!
-            
+        style:  GoogleFonts.imFellEnglish(
+              fontWeight: FontWeight.w300,
+              fontStyle: FontStyle.normal,
+              // letterSpacing: 1,
+              fontSize: 35.h,
+              color:Colors.black)
       ),
       content: Registeration(),
     );

@@ -7,6 +7,7 @@ import 'package:skiddo_web/controllers/gallery/gallery_controller.dart';
 import 'package:skiddo_web/pages/gallery_page.dart';
 import 'package:skiddo_web/pages/home_page.dart';
 import 'package:skiddo_web/pages/landing_page.dart';
+import 'package:skiddo_web/pages/sample.dart';
 import 'package:skiddo_web/pages/works_page.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -14,10 +15,7 @@ class CustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<GalleryController>(
-        init: GalleryController(),
-        builder: (GalleryController galleryController) {
-          return Drawer(
+   return Drawer(
             backgroundColor: Color.fromARGB(255, 18, 17, 27),
             // shadowColor: Theme.of(context).primaryColor,
             width: 250,
@@ -39,9 +37,9 @@ class CustomDrawer extends StatelessWidget {
                           ),
                           IconButton(
                               onPressed: () async {
-                                galleryController.toggler.value =
-                                    !galleryController.toggler.value;
-                                Navigator.pop(context);
+                                // galleryController.toggler.value =
+                                //     !galleryController.toggler.value;
+                                // Navigator.pop(context);
                               },
                               icon: const Icon(
                                 Icons.arrow_circle_left,
@@ -98,7 +96,7 @@ class CustomDrawer extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const WorksPage()),
+                              builder: (context) =>  SampleConsumer()),
                         );
                         
                         print("object");
@@ -125,7 +123,7 @@ class CustomDrawer extends StatelessWidget {
                 )),
                 TextButton(
                   onPressed: () async {
-                    galleryController.logOut();
+                   // galleryController.logOut();
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
                         builder: (BuildContext context) => LandingScreen()));
                   },
@@ -135,7 +133,7 @@ class CustomDrawer extends StatelessWidget {
               ],
             ),
           );
-        });
+      
   }
 }
 

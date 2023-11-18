@@ -26,7 +26,7 @@ class WorkEndpoint {
         case 200:
             List<dynamic> results = response.data;
             List<Sample> imageFolder =
-              results.map((json) => Sample.fromMap(json)).toList();
+              results.map((json) => Sample.fromJson(json)).toList();
           return imageFolder;
         default:
           return false;
@@ -62,7 +62,7 @@ class WorkEndpoint {
         case 201:
             List<dynamic> results = response.data;
             List<Sample> imagesamples =
-              results.map((json) => Sample.fromMap(json)).toList();
+              results.map((json) => Sample.fromJson(json)).toList();
           return imagesamples;
         default:
           return false;

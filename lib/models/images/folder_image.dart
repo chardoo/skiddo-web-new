@@ -1,53 +1,53 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+part '.generated/folder_image.freezed.dart';
+part ".generated/folder_image.g.dart";
 
-class Folder {
-  final String eventName;
-  final String url;
-  final String id;
-  final String eventDate;
+@freezed
+class Folder with _$Folder {
+  factory Folder(
+      {required String eventName,
+      required String eventDate,
+      required String url,
+      required String id}) = _Folder;
 
-  Folder({required this.eventName, required this.eventDate, required this.url, required this.id});
+  // factory Folder.fromMap(Map<String, dynamic> json) {
+  //   return Folder(eventName: json["eventName"], url: json["url"], id: json['id'], eventDate: json["eventDate"]);
+  // }
+  factory Folder.fromJson(Map<String, dynamic> json) => _$FolderFromJson(json);
 
-  factory Folder.fromMap(Map<String, dynamic> json) {
-    return Folder(eventName: json["eventName"], url: json["url"], id: json['id'], eventDate: json["eventDate"]);
-  }
-
-  @override
-  String toString() {
-    return "{ id:  eventName: $eventName  url: $url  id: $id}";
-  }
+  // @override
+  // String toString() {
+  //   return "{ id:  eventName: $eventName  url: $url  id: $id}";
+  // }
 }
 
-class Sample {
-  final String imageId;
-  final String url;
-  final String id;
+@freezed
+class Sample with _$Sample {
+  factory Sample(
+      {required String imageId,
+      required String url,
+      required String id}) = _Sample;
 
+  // factory Sample.fromMap(Map<String, dynamic> json) {
+  //   return Sample(imageId: json["imageId"], url: json["url"], id: json['id']);
+  // }
 
-  Sample({required this.imageId,required this.url, required this.id});
-
-  factory Sample.fromMap(Map<String, dynamic> json) {
-    return Sample(imageId: json["imageId"], url: json["url"], id: json['id']);
-  }
-
-  @override
-  String toString() {
-    return "{  url: $url  id: $id}";
-  }
+  // @override
+  // String toString() {
+  //   return "{  url: $url  id: $id}";
+  // }
+  factory Sample.fromJson(Map<String, dynamic> json) => _$SampleFromJson(json);
 }
+@freezed
+class EventImages with _$EventImages {
+  factory
+  EventImages(
+      {required String id,
+      required String price,
+      required String imageId,
+      required String url}) =  _EventImages;
 
-class EventImages {
-  final String id;
-  final String url;
-  final String imageId;
-  final int price;
-  EventImages({required this.id, required this.price, required this.imageId,  required this.url});
 
-  factory EventImages.fromMap(Map<String, dynamic> json) {
-    return EventImages( id: json["id"], url: json["url"], price: int.parse( json["price"]), imageId: json["imageId"]);
-  }
-
-  @override
-  String toString() {
-    return "{ id:  $id price: $price  url: $url}";
-  }
+  factory EventImages.fromJson(Map<String, dynamic> json) => _$EventImagesFromJson(json);
+ 
 }

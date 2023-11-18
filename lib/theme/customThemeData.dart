@@ -24,6 +24,7 @@ class Styles {
     return ThemeData(
       fontFamily: GoogleFonts.poppins().fontFamily,
       primarySwatch: white,
+      
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: isDarkTheme ? const Color(0xFF1C1C1E) : Colors.white,
         selectedItemColor: Colors.white,
@@ -123,13 +124,13 @@ class Styles {
                   : const Color.fromARGB(255, 255, 255, 255),
           ),
           
-          headline2: GoogleFonts.imFellEnglish(
-              fontWeight: FontWeight.w600,
+          headline2:  GoogleFonts.imFellEnglish(
+              fontWeight: FontWeight.w300,
               fontStyle: FontStyle.normal,
-              fontSize: 15.h,
               color: isDarkTheme
-                 ? const Color.fromARGB(255, 255, 255, 255)
-                  : const Color.fromARGB(255, 255, 255, 255)),
+                  ?  Colors.black
+                  :  Colors.black,
+              fontSize: 17.h),
           headline1: GoogleFonts.imFellEnglish(
               fontWeight: FontWeight.w500,
               fontStyle: FontStyle.normal,
